@@ -15,7 +15,7 @@ export class LoginService {
   ) {}
 
   async createUser(userId: string, rawPassword: string): Promise<UserEntity> {
-    const prevUser = await this.userRepository.findOneBy({ userId });
+    const prevUser = await this.userRepository.findOneBy({ userId: userId });
     if (prevUser) {
       throw new UnprocessableEntityException('User already exists');
     }
