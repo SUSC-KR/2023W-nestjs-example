@@ -5,6 +5,7 @@ import { ulid } from 'ulid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PasswordGenerator } from './password-generator';
+import { IUser } from 'src/auth/IUser';
 
 @Injectable()
 export class LoginService {
@@ -45,8 +46,9 @@ export class LoginService {
       throw new UnprocessableEntityException('Invalid credentials');
     }
 
-    const jwtSecret = 'jwtSecret';
-    const token = jwt.sign({ userId: user.id }, jwtSecret);
+    const jwtSecret = process.env.JWT_SECRET;
+    const payload: IUser = { userId: user.id };
+    const token = jwt.sign(payload, jwtSecret);
 
     return token;
   }

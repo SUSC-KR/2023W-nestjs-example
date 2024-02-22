@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { Repository } from 'typeorm';
 import { PostListView } from './views/post.view';
+import { ulid } from 'ulid';
 
 @Injectable()
 export class PostService {
@@ -17,5 +18,21 @@ export class PostService {
       skip: offset,
     });
     return { count, posts };
+  }
+
+  async createPost(
+    userId: string,
+    title: string,
+    content: string,
+  ): Promise<PostEntity> {
+    const newPost = new PostEntity();
+    newPost.id = ulid();
+    newPost.userId = userId;
+    newPost.title = title;
+    newPost.content = content;
+    newPost.createdAt = new Date();
+    await this.postRepository.save(newPost);
+
+    return newPost;
   }
 }
